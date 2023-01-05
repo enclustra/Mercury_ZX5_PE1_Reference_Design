@@ -1,5 +1,5 @@
 ---------------------------------------------------------------------------------------------------
--- Copyright (c) 2021 by Enclustra GmbH, Switzerland.
+-- Copyright (c) 2022 by Enclustra GmbH, Switzerland.
 --
 -- Permission is hereby granted, free of charge, to any person obtaining a copy of
 -- this hardware, software, firmware, and associated documentation files (the
@@ -55,7 +55,7 @@ entity Mercury_ZX5_PE1 is
     DDR_dqs_n                      : inout  std_logic_vector(3 downto 0);
     DDR_dqs_p                      : inout  std_logic_vector(3 downto 0);
     
-    -- Anios_A
+    -- Anios A
     IOA_D0_P                       : inout   std_logic;
     IOA_D1_N                       : inout   std_logic;
     IOA_D2_P                       : inout   std_logic;
@@ -83,7 +83,7 @@ entity Mercury_ZX5_PE1 is
     IOA_CLK1_N                     : inout   std_logic;
     IOA_CLK0_P                     : inout   std_logic;
     
-    -- Anios_B
+    -- Anios B
     IOB_D0_P                       : inout   std_logic;
     IOB_D1_N                       : inout   std_logic;
     IOB_D2_P                       : inout   std_logic;
@@ -102,6 +102,8 @@ entity Mercury_ZX5_PE1 is
     IOB_D15_N                      : inout   std_logic;
     IOB_D16_SC0_DIP1_N             : inout   std_logic;
     IOB_D17_SC1_DIP2_N             : inout   std_logic;
+    IOB_D18_SC2_DIP3_N             : inout   std_logic;
+    IOB_D19_SC3_DIP4_N             : inout   std_logic;
     IOB_D20_SC4_BTN0_N             : inout   std_logic;
     IOB_D21_SC5_BTN1_N             : inout   std_logic;
     IOB_D22_SC6_BTN2_N             : inout   std_logic;
@@ -109,7 +111,7 @@ entity Mercury_ZX5_PE1 is
     IOB_CLK1_N                     : inout   std_logic;
     IOB_CLK0_P                     : inout   std_logic;
     
-    -- FMC0
+    -- FMC LPC Connector 0
     FMC_LA02_N                     : inout   std_logic;
     FMC_LA02_P                     : inout   std_logic;
     FMC_LA03_N                     : inout   std_logic;
@@ -183,13 +185,51 @@ entity Mercury_ZX5_PE1 is
     FMC_CLK1_M2C_N                 : inout   std_logic;
     FMC_CLK1_M2C_P                 : inout   std_logic;
     
-    -- I2C_PL
+    -- I2C
     I2C_INT_N                      : in      std_logic;
-    I2C_SCL_PL                     : inout   std_logic;
-    I2C_SDA_PL                     : inout   std_logic;
+    I2C_SCL                        : inout   std_logic;
+    I2C_SDA                        : inout   std_logic;
+    
+    -- IOC
+    IOC_D0_P                       : inout   std_logic;
+    IOC_D1_N                       : inout   std_logic;
+    IOC_D2_P                       : inout   std_logic;
+    IOC_D3_N                       : inout   std_logic;
+    IOC_D4_P                       : inout   std_logic;
+    IOC_D5_N                       : inout   std_logic;
+    IOC_D6_P                       : inout   std_logic;
+    IOC_D7_N                       : inout   std_logic;
+    
+    -- IOD
+    IOD_D0_P                       : inout   std_logic;
+    IOD_D1_N                       : inout   std_logic;
+    IOD_D2_P                       : inout   std_logic;
+    IOD_D3_N                       : inout   std_logic;
+    IOD_D4_P                       : inout   std_logic;
+    IOD_D5_N                       : inout   std_logic;
+    IOD_D6_P                       : inout   std_logic;
+    IOD_D7_N                       : inout   std_logic;
+    
+    -- IOE
+    IOE_D0_LED0_N                  : inout   std_logic;
+    IOE_D1_LED1_N                  : inout   std_logic;
+    IOE_D2_LED2_N                  : inout   std_logic;
+    IOE_D3_LED3_N                  : inout   std_logic;
     
     -- LED
-    FPGA_LED0_N                    : out     std_logic
+    FPGA_LED0_N                    : out     std_logic;
+    
+    -- PE1 SI5338 CLK0
+    MGT_REFCLK0_N                  : in      std_logic;
+    MGT_REFCLK0_P                  : in      std_logic;
+    
+    -- PE1 SI5338 CLK1
+    MGT_REFCLK1_N                  : in      std_logic;
+    MGT_REFCLK1_P                  : in      std_logic;
+    
+    -- PE1 SI5338 CLK3
+    OSC_N                          : in      std_logic;
+    OSC_P                          : in      std_logic
   );
 end Mercury_ZX5_PE1;
 
@@ -223,6 +263,7 @@ architecture rtl of Mercury_ZX5_PE1 is
       DDR_dq              : inout  std_logic_vector(31 downto 0);
       DDR_dqs_n           : inout  std_logic_vector(3 downto 0);
       DDR_dqs_p           : inout  std_logic_vector(3 downto 0);
+      IRQ_I2C             : in     std_logic;
       IIC_sda_i           : in     std_logic;
       IIC_sda_o           : out    std_logic;
       IIC_sda_t           : out    std_logic;
@@ -238,6 +279,7 @@ architecture rtl of Mercury_ZX5_PE1 is
   ---------------------------------------------------------------------------------------------------
   signal Clk50            : std_logic;
   signal Rst_N            : std_logic;
+  signal IRQ_I2C          : std_logic;
   signal IIC_sda_i        : std_logic;
   signal IIC_sda_o        : std_logic;
   signal IIC_sda_t        : std_logic;
@@ -276,6 +318,7 @@ begin
       DDR_dq               => DDR_dq,
       DDR_dqs_n            => DDR_dqs_n,
       DDR_dqs_p            => DDR_dqs_p,
+      IRQ_I2C              => IRQ_I2C,
       IIC_sda_i            => IIC_sda_i,
       IIC_sda_o            => IIC_sda_o,
       IIC_sda_t            => IIC_sda_t,
@@ -284,10 +327,12 @@ begin
       IIC_scl_t            => IIC_scl_t
     );
   
-  I2C_SDA_PL <= IIC_sda_o when IIC_sda_t = '0' else 'Z';
-  IIC_sda_i <= I2C_SDA_PL;
-  I2C_SCL_PL <= IIC_scl_o when IIC_scl_t = '0' else 'Z';
-  IIC_scl_i <= I2C_SCL_PL;
+  IRQ_I2C <= not I2C_INT_N;
+  I2C_SDA <= IIC_sda_o when IIC_sda_t = '0' else 'Z';
+  IIC_sda_i <= I2C_SDA;
+  I2C_SCL <= IIC_scl_o when IIC_scl_t = '0' else 'Z';
+  IIC_scl_i <= I2C_SCL;
+  
   process (Clk50)
   begin
     if rising_edge (Clk50) then
@@ -299,5 +344,5 @@ begin
     end if;
   end process;
   FPGA_LED0_N <= '0' when LedCount(LedCount'high) = '0' else 'Z';
-
+  
 end rtl;
