@@ -1,5 +1,5 @@
-# ----------------------------------------------------------------------------------
-# Copyright (c) 2022 by Enclustra GmbH, Switzerland.
+# ----------------------------------------------------------------------------------------------------
+# Copyright (c) 2024 by Enclustra GmbH, Switzerland.
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy of
 # this hardware, software, firmware, and associated documentation files (the
@@ -17,8 +17,10 @@
 # HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 # OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
 # PRODUCT OR THE USE OR OTHER DEALINGS IN THE PRODUCT.
-# ----------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------
 
+set_property CFGBVS VCCO [current_design]
+set_property CONFIG_VOLTAGE 2.5 [current_design]
 set_property BITSTREAM.CONFIG.OVERTEMPPOWERDOWN ENABLE [current_design]
  
 # ----------------------------------------------------------------------------------
@@ -183,7 +185,7 @@ set_property -dict {PACKAGE_PIN M3    IOSTANDARD LVCMOS18  } [get_ports {IOD_D5_
 set_property -dict {PACKAGE_PIN G4    IOSTANDARD LVCMOS18  } [get_ports {IOD_D6_P}]
 set_property -dict {PACKAGE_PIN F4    IOSTANDARD LVCMOS18  } [get_ports {IOD_D7_N}]
 
-# IOE
+# IOE User LEDs
 set_property -dict {PACKAGE_PIN H4    IOSTANDARD LVCMOS18  } [get_ports {IOE_D0_LED0_N}]
 set_property -dict {PACKAGE_PIN H3    IOSTANDARD LVCMOS18  } [get_ports {IOE_D1_LED1_N}]
 set_property -dict {PACKAGE_PIN N6    IOSTANDARD LVCMOS18  } [get_ports {IOE_D2_LED2_N}]
@@ -193,9 +195,13 @@ set_property -dict {PACKAGE_PIN N5    IOSTANDARD LVCMOS18  } [get_ports {IOE_D3_
 set_property -dict {PACKAGE_PIN H5    IOSTANDARD LVCMOS18  } [get_ports {FPGA_LED0_N}]
 
 # PE1 SI5338 CLK0
+# set_property PACKAGE_PIN V9    [get_ports {MGT_REFCLK0_N}] # GTP
+# set_property PACKAGE_PIN U9    [get_ports {MGT_REFCLK0_P}] # GTP
 
 # PE1 SI5338 CLK1
+# set_property PACKAGE_PIN V5    [get_ports {MGT_REFCLK1_N}] # GTP
+# set_property PACKAGE_PIN U5    [get_ports {MGT_REFCLK1_P}] # GTP
 
 # PE1 SI5338 CLK3
-set_property -dict {PACKAGE_PIN Y15   IOSTANDARD LVCMOS25  } [get_ports {OSC_N}]
-set_property -dict {PACKAGE_PIN Y14   IOSTANDARD LVCMOS25  } [get_ports {OSC_P}]
+set_property -dict {PACKAGE_PIN Y15   IOSTANDARD LVDS_25   } [get_ports {OSC_N}]
+set_property -dict {PACKAGE_PIN Y14   IOSTANDARD LVDS_25   } [get_ports {OSC_P}]
