@@ -1,3 +1,7 @@
+## 2024.2_v1.2.3
+* Remove component declarations for components provided by the unisim library
+* Removed ME-ZX5-30-3C-D10 product model
+
 ## 2024.1_v1.1.3
 * Add OSC IOBUFDS instance to top level VHDL
 * Added CFGBVS voltage constraints
